@@ -1,0 +1,9 @@
+node_modules/
+.env
+database/*.db
+uploads/
+__pycache__/
+*.pyc
+.venv/
+venv/
+npm-debug.log
