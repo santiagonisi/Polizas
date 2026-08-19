@@ -1,0 +1,66 @@
+<h2 class="section-title">Panel de Control</h2>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card shadow-sm text-center p-3 h-100">
+      <i class="bi bi-file-earmark-text fs-2 text-warning"></i>
+      <h3 class="mt-2 mb-0"><%= totalPolizas %></h3>
+      <small class="text-muted">Pólizas totales</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card shadow-sm text-center p-3 h-100">
+      <i class="bi bi-cone-striped fs-2 text-warning"></i>
+      <h3 class="mt-2 mb-0"><%= totalObras %></h3>
+      <small class="text-muted">Obras en ejecución</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card shadow-sm text-center p-3 h-100">
+      <i class="bi bi-shield-check fs-2 text-warning"></i>
+      <h3 class="mt-2 mb-0"><%= totalAseguradoras %></h3>
+      <small class="text-muted">Aseguradoras activas</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card shadow-sm text-center p-3 h-100 border-danger">
+      <i class="bi bi-exclamation-triangle fs-2 text-danger"></i>
+      <h3 class="mt-2 mb-0"><%= vencidas %></h3>
+      <small class="text-muted">Pólizas vencidas</small>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h5 class="mb-3">Pólizas próximas a vencer (30 días)</h5>
+    <% if (vencenPronto.length === 0) { %>
+      <div class="alert alert-info mb-0">No hay pólizas próximas a vencer.</div>
+    <% } else { %>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Número</th>
+              <th>Obra</th>
+              <th>Aseguradora</th>
+              <th>Vencimiento</th>
+              <th>Monto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% vencenPronto.forEach(p => { %>
+              <tr>
+                <td><%= p.numero %></td>
+                <td><%= p.obra ? p.obra.nombre : '-' %></td>
+                <td><%= p.aseguradora ? p.aseguradora.razonSocial : '-' %></td>
+                <td><span class="badge bg-warning text-dark"><%= p.fechaVencimiento %></span></td>
+                <td><%= p.monto %> <%= p.moneda %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>

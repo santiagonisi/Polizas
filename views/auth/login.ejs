@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión | Pólizas Vial</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="login-page d-flex align-items-center justify-content-center">
+  <div class="card shadow login-card">
+    <div class="card-body p-4">
+      <div class="text-center mb-4">
+        <img src="/images/isologo.png" alt="Logo" width="70" height="70" onerror="this.style.display='none'">
+        <h4 class="mt-2">Pólizas Vial</h4>
+        <p class="text-muted mb-0">Gestión de pólizas de caución de obras</p>
+      </div>
+
+      <% if (typeof flash !== 'undefined' && flash) { %>
+        <div class="alert alert-<%= flash.type %>"><%= flash.msg %></div>
+      <% } %>
+
+      <form method="POST" action="/auth/login">
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" name="email" class="form-control" required autofocus>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Contraseña</label>
+          <input type="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

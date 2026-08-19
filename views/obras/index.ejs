@@ -1,0 +1,115 @@
+<h2 class="section-title">Gestión de Obras</h2>
+
+<div class="card mb-4 shadow-sm">
+  <div class="card-body">
+    <form method="POST" action="/obras" class="row g-3">
+      <div class="col-md-4"><input class="form-control" name="nombre" placeholder="Nombre de la Obra" required></div>
+      <div class="col-md-4"><input class="form-control" name="comitente" placeholder="Comitente" required></div>
+      <div class="col-md-4"><input class="form-control" name="ubicacion" placeholder="Ubicación"></div>
+      <div class="col-md-4"><input type="number" step="0.01" class="form-control" name="montoContrato" placeholder="Monto de Contrato"></div>
+      <div class="col-md-4"><input type="date" class="form-control" name="fechaInicio" placeholder="Fecha de Inicio"></div>
+      <div class="col-md-4"><input type="date" class="form-control" name="fechaFin" placeholder="Fecha de Fin"></div>
+      <div class="col-12"><button type="submit" class="btn btn-primary mt-2 w-100">Agregar Obra</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover table-bordered border-secondary-subtle shadow-sm align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Nombre</th>
+        <th>Comitente</th>
+        <th>Ubicación</th>
+        <th>Monto Contrato</th>
+        <th>Inicio</th>
+        <th>Fin</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% obras.forEach(o => { %>
+        <tr>
+          <td><%= o.nombre %></td>
+          <td><%= o.comitente %></td>
+          <td><%= o.ubicacion %></td>
+          <td><%= o.montoContrato %></td>
+          <td><%= o.fechaInicio || '-' %></td>
+          <td><%= o.fechaFin || '-' %></td>
+          <td><span class="badge bg-warning text-dark"><%= o.estado %></span></td>
+          <td>
+            <div class="d-flex gap-1">
+              <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editarObra<%= o.id %>">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#eliminarObra<%= o.id %>">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+
+            <div class="modal fade" id="editarObra<%= o.id %>">
+              <div class="modal-dialog">
+                <form method="POST" action="/obras/<%= o.id %>">
+                  <div class="modal-content">
+                    <div class="modal-header"><h5 class="modal-title">Editar Obra</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-2"><label class="form-label">Nombre</label><input class="form-control" name="nombre" value="<%= o.nombre %>" required></div>
+                      <div class="mb-2"><label class="form-label">Comitente</label><input class="form-control" name="comitente" value="<%= o.comitente %>" required></div>
+                      <div class="mb-2"><label class="form-label">Ubicación</label><input class="form-control" name="ubicacion" value="<%= o.ubicacion %>"></div>
+                      <div class="mb-2"><label class="form-label">Monto Contrato</label><input type="number" step="0.01" class="form-control" name="montoContrato" value="<%= o.montoContrato %>"></div>
+                      <div class="mb-2"><label class="form-label">Fecha Inicio</label><input type="date" class="form-control" name="fechaInicio" value="<%= o.fechaInicio %>"></div>
+                      <div class="mb-2"><label class="form-label">Fecha Fin</label><input type="date" class="form-control" name="fechaFin" value="<%= o.fechaFin %>"></div>
+                      <div class="mb-2">
+                        <label class="form-label">Estado</label>
+                        <select name="estado" class="form-select">
+                          <% ['En ejecución', 'Finalizada', 'Suspendida'].forEach(e => { %>
+                            <option value="<%= e %>" <%= o.estado === e ? 'selected' : '' %>><%= e %></option>
+                          <% }) %>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="modal fade" id="eliminarObra<%= o.id %>">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header"><h5>Confirmar Eliminación</h5></div>
+                  <div class="modal-body">¿Eliminar la obra <%= o.nombre %>?</div>
+                  <div class="modal-footer">
+                    <form action="/obras/<%= o.id %>/eliminar" method="POST">
+                      <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      <% }) %>
+      <% if (obras.length === 0) { %>
+        <tr><td colspan="8" class="text-center text-muted">No hay obras cargadas.</td></tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<nav aria-label="Paginación">
+  <ul class="pagination justify-content-center">
+    <% for (let num = 1; num <= totalPages; num++) { %>
+      <li class="page-item <%= num === page ? 'active' : '' %>">
+        <a class="page-link" href="/obras?page=<%= num %>"><%= num %></a>
+      </li>
+    <% } %>
+  </ul>
+</nav>

@@ -1,0 +1,110 @@
+<h2 class="section-title">Gestión de Aseguradoras</h2>
+
+<div class="card mb-4 shadow-sm">
+  <div class="card-body">
+    <form method="POST" action="/aseguradoras" class="row g-3">
+      <div class="col-md-4"><input class="form-control" name="razonSocial" placeholder="Razón Social" required></div>
+      <div class="col-md-4"><input class="form-control" name="cuit" placeholder="CUIT"></div>
+      <div class="col-md-4"><input class="form-control" name="contacto" placeholder="Contacto"></div>
+      <div class="col-md-4"><input class="form-control" name="telefono" placeholder="Teléfono"></div>
+      <div class="col-md-4"><input type="email" class="form-control" name="email" placeholder="Email"></div>
+      <div class="col-12"><button type="submit" class="btn btn-primary mt-2 w-100">Agregar Aseguradora</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover table-bordered border-secondary-subtle shadow-sm align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Razón Social</th>
+        <th>CUIT</th>
+        <th>Contacto</th>
+        <th>Teléfono</th>
+        <th>Email</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% aseguradoras.forEach(a => { %>
+        <tr>
+          <td><%= a.razonSocial %></td>
+          <td><%= a.cuit %></td>
+          <td><%= a.contacto %></td>
+          <td><%= a.telefono %></td>
+          <td><%= a.email %></td>
+          <td><span class="badge bg-warning text-dark"><%= a.estado %></span></td>
+          <td>
+            <div class="d-flex gap-1">
+              <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editarAseguradora<%= a.id %>">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#eliminarAseguradora<%= a.id %>">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+
+            <div class="modal fade" id="editarAseguradora<%= a.id %>">
+              <div class="modal-dialog">
+                <form method="POST" action="/aseguradoras/<%= a.id %>">
+                  <div class="modal-content">
+                    <div class="modal-header"><h5 class="modal-title">Editar Aseguradora</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-2"><label class="form-label">Razón Social</label><input class="form-control" name="razonSocial" value="<%= a.razonSocial %>" required></div>
+                      <div class="mb-2"><label class="form-label">CUIT</label><input class="form-control" name="cuit" value="<%= a.cuit %>"></div>
+                      <div class="mb-2"><label class="form-label">Contacto</label><input class="form-control" name="contacto" value="<%= a.contacto %>"></div>
+                      <div class="mb-2"><label class="form-label">Teléfono</label><input class="form-control" name="telefono" value="<%= a.telefono %>"></div>
+                      <div class="mb-2"><label class="form-label">Email</label><input type="email" class="form-control" name="email" value="<%= a.email %>"></div>
+                      <div class="mb-2">
+                        <label class="form-label">Estado</label>
+                        <select name="estado" class="form-select">
+                          <option value="Activo" <%= a.estado === 'Activo' ? 'selected' : '' %>>Activo</option>
+                          <option value="Inactivo" <%= a.estado === 'Inactivo' ? 'selected' : '' %>>Inactivo</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="modal fade" id="eliminarAseguradora<%= a.id %>">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header"><h5>Confirmar Eliminación</h5></div>
+                  <div class="modal-body">¿Eliminar la aseguradora <%= a.razonSocial %>?</div>
+                  <div class="modal-footer">
+                    <form action="/aseguradoras/<%= a.id %>/eliminar" method="POST">
+                      <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      <% }) %>
+      <% if (aseguradoras.length === 0) { %>
+        <tr><td colspan="7" class="text-center text-muted">No hay aseguradoras cargadas.</td></tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<nav aria-label="Paginación">
+  <ul class="pagination justify-content-center">
+    <% for (let num = 1; num <= totalPages; num++) { %>
+      <li class="page-item <%= num === page ? 'active' : '' %>">
+        <a class="page-link" href="/aseguradoras?page=<%= num %>"><%= num %></a>
+      </li>
+    <% } %>
+  </ul>
+</nav>
