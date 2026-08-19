@@ -37,17 +37,6 @@ Polizas/
 - **Usuarios:** login con roles (admin / usuario).
 - **Panel de Control:** indicadores y pólizas próximas a vencer (30 días).
 
-## Puesta en marcha
-
-```bash
-npm install
-copy .env.example .env
-npm run seed      # crea usuario admin@iarsa.com / admin123
-npm run dev
-```
-
-La aplicación queda disponible en `http://localhost:3000`.
-
 ## Roadmap (próximos pasos)
 
 - Notificaciones automáticas de vencimiento de pólizas.
