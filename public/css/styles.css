@@ -1,0 +1,166 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #212529;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    color: #e6c028;
+    margin-bottom: 1rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.navbar {
+    box-shadow: 0 4px 6px #e3c019;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.navbar-brand img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 8px;
+    padding: 2px;
+    margin-right: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.section-title {
+    border-bottom: 3px solid #e6c028;
+    color: #e6c028;
+    padding-bottom: 0.25rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-collapse: collapse;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.table thead th {
+    background-color: #dee2e6;
+    font-weight: bold;
+    color: #000000;
+    text-align: center;
+    padding: 0.75rem;
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.75rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #fdf6d9;
+}
+
+form input, form select, form textarea {
+    border-radius: 0.375rem;
+    border: 1px solid #ced4da;
+    padding: 0.5rem;
+}
+
+form input:focus, form select:focus, form textarea:focus {
+    border-color: #e6c028;
+    box-shadow: 0 0 0 0.15rem rgba(230,192,40,0.4);
+    outline: none;
+}
+
+.btn {
+    border-radius: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: #e6c028;
+    color: #000;
+    border: 1px solid #e6c028;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #e6c028 !important;
+    color: #000 !important;
+    border-color: #e6c028;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.badge {
+    font-size: 0.85rem;
+    padding: 0.5em 0.75em;
+    border-radius: 0.375rem;
+}
+
+.pagination .page-item .page-link {
+    border-radius: 0.375rem;
+    color: #212529;
+    border: 1px solid #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #e6c028;
+    border-color: #e6c028;
+    color: #fff;
+}
+
+.login-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 380px;
+    border-radius: 0.75rem;
+}
+
+#scrollTopButton {
+    opacity: 0;
+    visibility: hidden;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#scrollTopButton.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+@media (max-width: 768px) {
+    .table th, .table td {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+    }
+}
