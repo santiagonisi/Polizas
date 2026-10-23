@@ -1,0 +1,68 @@
+<h2 class="section-title">Carga asistida</h2>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted">Pendientes de revisión</div><strong class="fs-3"><%= conteos.pendientes %></strong></div></div></div>
+  <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted">Duplicadas</div><strong class="fs-3"><%= conteos.duplicadas %></strong></div></div></div>
+  <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted">Confirmadas</div><strong class="fs-3"><%= conteos.confirmadas %></strong></div></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <section class="card shadow-sm h-100">
+      <div class="card-body">
+        <h3 class="h5">Importar planilla Excel</h3>
+        <p class="text-muted">Validá campos, referencias y números duplicados antes de crear pólizas.</p>
+        <a href="/cargas/plantilla.xlsx" class="btn btn-outline-secondary mb-3"><i class="bi bi-download"></i> Descargar plantilla</a>
+        <form method="POST" action="/cargas/excel" enctype="multipart/form-data">
+          <label for="excelUpload" class="form-label">Planilla .xlsx</label>
+          <input id="excelUpload" class="form-control mb-3" type="file" name="archivo" accept=".xlsx" required>
+          <button class="btn btn-primary" type="submit"><i class="bi bi-file-earmark-arrow-up"></i> Validar planilla</button>
+        </form>
+      </div>
+    </section>
+  </div>
+  <div class="col-lg-6">
+    <section class="card shadow-sm h-100">
+      <div class="card-body">
+        <h3 class="h5">Procesar pólizas PDF</h3>
+        <p class="text-muted">Extrae texto o aplica OCR a escaneos. Los datos siempre quedan pendientes de revisión.</p>
+        <form method="POST" action="/cargas/pdf" enctype="multipart/form-data">
+          <label for="pdfUpload" class="form-label">Uno o varios documentos PDF</label>
+          <input id="pdfUpload" class="form-control mb-3" type="file" name="archivos" accept="application/pdf,.pdf" multiple required>
+          <button class="btn btn-primary" type="submit"><i class="bi bi-file-earmark-pdf"></i> Procesar PDF(s)</button>
+        </form>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+  <h3 class="h5 mb-0">Bandeja de documentos</h3>
+  <% if (cargas.some(c => c.tipoCarga === 'Excel' && ['Requiere revisión', 'Duplicada'].includes(c.estado))) { %>
+    <div class="d-flex gap-2">
+      <a href="/cargas/errores.xlsx" class="btn btn-outline-secondary btn-sm"><i class="bi bi-download"></i> Descargar filas con errores</a>
+      <form method="POST" action="/cargas/errores/rechazar" onsubmit="return confirm('¿Marcar como rechazadas todas las filas Excel pendientes con errores?')">
+        <button class="btn btn-outline-danger btn-sm" type="submit">Descartar filas con errores</button>
+      </form>
+    </div>
+  <% } %>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover table-bordered border-secondary-subtle align-middle">
+    <thead class="table-light"><tr><th>Documento</th><th>Tipo</th><th>Estado</th><th>Recibido</th><th>Observaciones</th><th></th></tr></thead>
+    <tbody>
+      <% cargas.forEach(carga => { const errores = parseJSON(carga.errores, []); %>
+        <tr>
+          <td><%= carga.nombreOriginal %></td>
+          <td><%= carga.tipoCarga %></td>
+          <td><span class="badge <%= carga.estado === 'Confirmada' ? 'bg-success' : carga.estado === 'Duplicada' ? 'bg-danger' : carga.estado === 'Rechazada' ? 'bg-secondary' : 'bg-warning text-dark' %>"><%= carga.estado %></span></td>
+          <td><%= new Date(carga.createdAt).toLocaleString('es-AR') %></td>
+          <td><%= errores.join(' ') || '-' %></td>
+          <td class="text-nowrap"><a class="btn btn-primary btn-sm" href="/cargas/<%= carga.id %>" title="Revisar"><i class="bi bi-search"></i></a></td>
+        </tr>
+      <% }) %>
+      <% if (!cargas.length) { %><tr><td colspan="6" class="text-center text-muted">Todavía no hay documentos en la bandeja.</td></tr><% } %>
+    </tbody>
+  </table>
+</div>

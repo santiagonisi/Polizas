@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+  <h2 class="section-title mb-0">Revisar documento</h2>
+  <a href="/cargas" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Bandeja</a>
+</div>
+
+<div class="d-flex align-items-center gap-2 flex-wrap mb-3">
+  <span class="badge bg-dark"><%= carga.tipoCarga %></span>
+  <span class="badge <%= carga.estado === 'Duplicada' ? 'bg-danger' : carga.estado === 'Confirmada' ? 'bg-success' : 'bg-warning text-dark' %>"><%= carga.estado %></span>
+  <span class="text-muted"><%= carga.nombreOriginal %></span>
+  <% if (carga.tipoCarga === 'PDF') { %><a href="/documentos/pendientes/<%= carga.id %>" target="_blank" rel="noopener" class="btn btn-outline-danger btn-sm"><i class="bi bi-file-earmark-pdf"></i> Abrir documento</a><% } %>
+</div>
+
+<% if (errores.length) { %>
+  <div class="alert alert-warning"><strong>Revisión necesaria</strong><ul class="mb-0 mt-1"><% errores.forEach(error => { %><li><%= error %></li><% }) %></ul></div>
+<% } %>
+
+<% if (!['Confirmada', 'Rechazada'].includes(carga.estado)) { %>
+  <form method="POST" action="/cargas/<%= carga.id %>" class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4"><label class="form-label">Número de póliza *</label><input class="form-control" name="numero" value="<%= datos.numero || '' %>" required></div>
+        <div class="col-md-4"><label class="form-label">Tipo *</label><select class="form-select" name="tipo" required><option value="">Seleccionar</option><% tiposPoliza.forEach(tipo => { %><option value="<%= tipo %>" <%= datos.tipo === tipo ? 'selected' : '' %>><%= tipo %></option><% }) %></select></div>
+        <div class="col-md-4"><label class="form-label">Tomador / comitente</label><input class="form-control" name="tomador" value="<%= datos.tomador || '' %>"></div>
+        <div class="col-md-6"><label class="form-label">Obra *</label><select class="form-select" name="obraId" required><option value="">Seleccionar</option><% obras.forEach(obra => { %><option value="<%= obra.id %>" <%= String(datos.obraId) === String(obra.id) ? 'selected' : '' %>><%= obra.nombre %> · <%= obra.comitente %></option><% }) %></select></div>
+        <div class="col-md-6"><label class="form-label">Aseguradora *</label><select class="form-select" name="aseguradoraId" required><option value="">Seleccionar</option><% aseguradoras.forEach(aseguradora => { %><option value="<%= aseguradora.id %>" <%= String(datos.aseguradoraId) === String(aseguradora.id) ? 'selected' : '' %>><%= aseguradora.razonSocial %></option><% }) %></select></div>
+        <div class="col-md-4"><label class="form-label">Monto *</label><input class="form-control" type="number" min="0.01" step="0.01" name="monto" value="<%= datos.monto || '' %>" required></div>
+        <div class="col-md-2"><label class="form-label">Moneda *</label><select class="form-select" name="moneda" required><option value="">Seleccionar</option><option value="ARS" <%= datos.moneda === 'ARS' ? 'selected' : '' %>>ARS</option><option value="USD" <%= datos.moneda === 'USD' ? 'selected' : '' %>>USD</option></select></div>
+        <div class="col-md-3"><label class="form-label">Emisión *</label><input class="form-control" type="date" name="fechaEmision" value="<%= datos.fechaEmision || '' %>" required></div>
+        <div class="col-md-3"><label class="form-label">Vencimiento</label><input class="form-control" type="date" name="fechaVencimiento" value="<%= datos.fechaVencimiento || '' %>"></div>
+        <div class="col-12"><label class="form-label">Observaciones</label><textarea class="form-control" name="observaciones" rows="2"><%= datos.observaciones || '' %></textarea></div>
+      </div>
+      <div class="d-flex gap-2 flex-wrap mt-3">
+        <button class="btn btn-outline-primary" type="submit"><i class="bi bi-save"></i> Guardar revisión</button>
+      </div>
+    </div>
+  </form>
+  <div class="d-flex gap-2 mb-4">
+    <form method="POST" action="/cargas/<%= carga.id %>/confirmar"><button class="btn btn-primary" type="submit"><i class="bi bi-check2-circle"></i> Confirmar póliza</button></form>
+    <form method="POST" action="/cargas/<%= carga.id %>/rechazar" onsubmit="return confirm('¿Rechazar esta carga?')"><button class="btn btn-outline-danger" type="submit">Rechazar documento</button></form>
+  </div>
+<% } %>
+
+<% if (carga.textoExtraido) { %>
+  <details class="mb-4"><summary class="btn btn-outline-secondary btn-sm">Ver texto extraído del documento</summary><pre class="border rounded p-3 mt-2 bg-light text-wrap"><%= carga.textoExtraido %></pre></details>
+<% } %>

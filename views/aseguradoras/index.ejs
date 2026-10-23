@@ -65,6 +65,13 @@
                           <option value="Inactivo" <%= a.estado === 'Inactivo' ? 'selected' : '' %>>Inactivo</option>
                         </select>
                       </div>
+                      <% const etiquetas = reglas(a); %>
+                      <fieldset class="border rounded p-3 mt-3">
+                        <legend class="float-none w-auto px-2 fs-6">Etiquetas de extracción PDF</legend>
+                        <% [['aliases', 'Nombres alternativos de la compañía'], ['numero', 'Número'], ['tomador', 'Tomador'], ['monto', 'Monto'], ['fechaEmision', 'Fecha de emisión'], ['fechaVencimiento', 'Fecha de vencimiento'], ['tipo', 'Tipo']].forEach(([key, label]) => { %>
+                          <div class="mb-2"><label class="form-label"><%= label %></label><input class="form-control" name="etiqueta_<%= key %>" value="<%= (etiquetas[key] || []).join(', ') %>" placeholder="Ej.: Número de póliza, Póliza N°"></div>
+                        <% }) %>
+                      </fieldset>
                     </div>
                     <div class="modal-footer">
                       <button type="submit" class="btn btn-primary">Guardar Cambios</button>

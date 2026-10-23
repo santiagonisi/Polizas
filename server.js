@@ -14,6 +14,9 @@ const authRoutes = require('./routes/authRoutes');
 const polizaRoutes = require('./routes/polizaRoutes');
 const obraRoutes = require('./routes/obraRoutes');
 const aseguradoraRoutes = require('./routes/aseguradoraRoutes');
+const cargasRoutes = require('./routes/cargasRoutes');
+const documentRoutes = require('./routes/documentRoutes');
+const documentController = require('./controllers/documentController');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,7 +33,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Sesión
 // Nota: se usa el MemoryStore por defecto para esta etapa inicial (desarrollo).
@@ -47,6 +49,7 @@ app.use(session({
 }));
 
 app.use(loadUser);
+app.get('/uploads/polizas/:filename', requireAuth, documentController.legacyPoliza);
 
 // Rutas
 app.use('/auth', authRoutes);
@@ -54,6 +57,21 @@ app.use('/', requireAuth, dashboardRoutes);
 app.use('/polizas', requireAuth, polizaRoutes);
 app.use('/obras', requireAuth, obraRoutes);
 app.use('/aseguradoras', requireAuth, aseguradoraRoutes);
+app.use('/cargas', requireAuth, cargasRoutes);
+app.use('/documentos', requireAuth, documentRoutes);
+
+app.use((error, req, res, next) => {
+  if (res.headersSent) return next(error);
+  console.error(error);
+  if (req.path.startsWith('/cargas')) {
+    const status = error.name === 'MulterError' ? 400 : 500;
+    const message = status === 400
+      ? 'El archivo supera los límites permitidos o no pudo procesarse.'
+      : 'No se pudo procesar el archivo. Revisá el formato e intentá nuevamente.';
+    return res.status(status).send(message);
+  }
+  res.status(500).send('Ocurrió un error interno.');
+});
 
 // 404
 app.use((req, res) => {
