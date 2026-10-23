@@ -13,6 +13,13 @@ const Poliza = sequelize.define('Poliza', {
     type: DataTypes.STRING,
     allowNull: false // Cumplimiento de Contrato, Anticipo Financiero, Fondo de Reparo, Impugnación, etc.
   },
+  tomador: {
+    type: DataTypes.STRING
+  },
+  reemplazaAId: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
   monto: {
     type: DataTypes.FLOAT,
     allowNull: false,
@@ -49,5 +56,8 @@ Obra.hasMany(Poliza, { foreignKey: 'obraId', as: 'polizas' });
 
 Poliza.belongsTo(Aseguradora, { foreignKey: 'aseguradoraId', as: 'aseguradora' });
 Aseguradora.hasMany(Poliza, { foreignKey: 'aseguradoraId', as: 'polizas' });
+
+Poliza.belongsTo(Poliza, { foreignKey: 'reemplazaAId', as: 'reemplazaA' });
+Poliza.hasMany(Poliza, { foreignKey: 'reemplazaAId', as: 'reemplazadaPor' });
 
 module.exports = Poliza;

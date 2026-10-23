@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <div>
+    <h2 class="section-title mb-1">Pólizas de la obra</h2>
+    <div class="text-muted"><%= obra.nombre %> | <%= obra.comitente %></div>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="/obras" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Obras</a>
+    <a href="/polizas/nueva" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nueva póliza</a>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover table-bordered border-secondary-subtle shadow-sm align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Etapa / Tipo</th>
+        <th>Número</th>
+        <th>Emisión</th>
+        <th>Vencimiento</th>
+        <th>Estado</th>
+        <th>Relación</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% polizas.forEach(p => { %>
+        <% const claseEstado = p.estado === 'Pendiente de cancelación' ? 'bg-warning text-dark' : p.estado === 'Cancelada' ? 'bg-secondary' : p.estado === 'Vencida' ? 'bg-danger' : p.estado === 'Vigente' ? 'bg-success' : 'bg-info text-dark'; %>
+        <tr class="<%= p.estado === 'Pendiente de cancelación' ? 'table-warning' : '' %>">
+          <td><%= p.tipo %></td>
+          <td><%= p.numero %></td>
+          <td><%= p.fechaEmision %></td>
+          <td><%= p.fechaVencimiento || '-' %></td>
+          <td><span class="badge <%= claseEstado %>"><%= p.estado %></span></td>
+          <td>
+            <% if (p.reemplazaA) { %>
+              Reemplaza <%= p.reemplazaA.tipo %> (<%= p.reemplazaA.numero %>)
+            <% } else if (p.reemplazadaPor && p.reemplazadaPor.length) { %>
+              Reemplazada por <%= p.reemplazadaPor.map(sucesora => `${sucesora.tipo} (${sucesora.numero})`).join(', ') %>
+            <% } else { %>
+              -
+            <% } %>
+          </td>
+          <td>
+            <div class="d-flex gap-1">
+              <a href="/polizas/<%= p.id %>/editar" class="btn btn-outline-primary btn-sm" title="Editar póliza"><i class="bi bi-pencil"></i></a>
+              <% if (p.estado === 'Pendiente de cancelación') { %>
+                <form method="POST" action="/polizas/<%= p.id %>/cancelar" onsubmit="return confirm('¿Confirmás que esta póliza ya fue cancelada?')">
+                  <button type="submit" class="btn btn-success btn-sm">Confirmar cancelación</button>
+                </form>
+              <% } %>
+            </div>
+          </td>
+        </tr>
+      <% }) %>
+      <% if (polizas.length === 0) { %>
+        <tr><td colspan="7" class="text-center text-muted">Esta obra todavía no tiene pólizas.</td></tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>

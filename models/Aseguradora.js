@@ -18,6 +18,11 @@ const Aseguradora = sequelize.define('Aseguradora', {
   email: {
     type: DataTypes.STRING
   },
+  reglasExtraccion: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+    defaultValue: '{}'
+  },
   estado: {
     type: DataTypes.STRING,
     defaultValue: 'Activo'

@@ -40,6 +40,9 @@
           <td><span class="badge bg-warning text-dark"><%= o.estado %></span></td>
           <td>
             <div class="d-flex gap-1">
+              <a href="/obras/<%= o.id %>/polizas" class="btn btn-outline-secondary btn-sm" title="Ver pólizas de la obra">
+                <i class="bi bi-shield-check"></i>
+              </a>
               <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editarObra<%= o.id %>">
                 <i class="bi bi-pencil"></i>
               </button>

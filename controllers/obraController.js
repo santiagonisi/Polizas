@@ -1,4 +1,5 @@
-const { Obra } = require('../models');
+const { Obra, Poliza } = require('../models');
+const { ETAPAS_CADENA } = require('../config/polizaTypes');
 
 exports.index = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -47,4 +48,26 @@ exports.eliminar = async (req, res) => {
     req.session.flash = { type: 'danger', msg: 'Error al eliminar la obra.' };
   }
   res.redirect('/obras');
+};
+
+exports.verPolizas = async (req, res) => {
+  const obra = await Obra.findByPk(req.params.id);
+  if (!obra) return res.redirect('/obras');
+
+  const polizas = await Poliza.findAll({
+    where: { obraId: obra.id },
+    include: [
+      { model: Poliza, as: 'reemplazaA' },
+      { model: Poliza, as: 'reemplazadaPor', attributes: ['id', 'numero', 'tipo'] }
+    ],
+    order: [['fechaEmision', 'ASC']]
+  });
+
+  polizas.sort((a, b) => {
+    const etapaA = ETAPAS_CADENA[a.tipo] || 99;
+    const etapaB = ETAPAS_CADENA[b.tipo] || 99;
+    return etapaA - etapaB || a.fechaEmision.localeCompare(b.fechaEmision);
+  });
+
+  res.render('obras/polizas', { title: `Pólizas | ${obra.nombre}`, obra, polizas });
 };

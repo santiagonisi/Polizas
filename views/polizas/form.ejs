@@ -7,22 +7,41 @@
       <input type="text" name="numero" class="form-control" value="<%= poliza ? poliza.numero : '' %>" required>
     </div>
     <div class="col-md-4">
+      <label class="form-label">Tomador</label>
+      <input type="text" name="tomador" class="form-control" value="<%= poliza ? poliza.tomador || '' : '' %>">
+    </div>
+    <div class="col-md-4">
       <label class="form-label">Tipo</label>
-      <select name="tipo" class="form-select" required>
-        <% ['Cumplimiento de Contrato', 'Anticipo Financiero', 'Fondo de Reparo', 'Impugnación', 'Mantenimiento de Oferta'].forEach(t => { %>
+      <select name="tipo" id="tipoPoliza" class="form-select" required>
+        <% tiposPoliza.forEach(t => { %>
           <option value="<%= t %>" <%= poliza && poliza.tipo === t ? 'selected' : '' %>><%= t %></option>
         <% }) %>
       </select>
     </div>
     <div class="col-md-4">
       <label class="form-label">Obra</label>
-      <select name="obraId" class="form-select" required>
+      <select name="obraId" id="obraPoliza" class="form-select" required>
         <option value="">Seleccione...</option>
         <% obras.forEach(o => { %>
           <option value="<%= o.id %>" <%= poliza && poliza.obraId === o.id ? 'selected' : '' %>><%= o.nombre %></option>
         <% }) %>
       </select>
     </div>
+
+    <% if (!poliza) { %>
+    <div class="col-md-6" id="reemplazoField" hidden>
+      <label class="form-label">¿Qué póliza anterior reemplaza?</label>
+      <select name="reemplazaAId" id="reemplazaAId" class="form-select">
+        <option value="">No reemplaza otra póliza</option>
+        <% candidatas.forEach(c => { %>
+          <option value="<%= c.id %>" data-obra-id="<%= c.obraId %>" data-etapa="<%= etapasCadena[c.tipo] %>">
+            <%= c.obra ? c.obra.nombre : 'Obra' %> | <%= c.tipo %> | <%= c.numero %>
+          </option>
+        <% }) %>
+      </select>
+      <div class="form-text" id="reemplazoSugerencia">Seleccioná una póliza solo si corresponde. La baja real se confirma luego.</div>
+    </div>
+    <% } %>
 
     <div class="col-md-4">
       <label class="form-label">Aseguradora</label>
@@ -58,7 +77,7 @@
     <div class="col-md-3">
       <label class="form-label">Estado</label>
       <select name="estado" class="form-select">
-        <% ['Vigente', 'Vencida', 'Cancelada', 'Renovada'].forEach(e => { %>
+        <% ['Vigente', 'Pendiente de cancelación', 'Vencida', 'Cancelada', 'Renovada'].forEach(e => { %>
           <option value="<%= e %>" <%= poliza.estado === e ? 'selected' : '' %>><%= e %></option>
         <% }) %>
       </select>
