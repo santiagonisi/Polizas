@@ -33,6 +33,57 @@
 
 <div class="card shadow-sm">
   <div class="card-body">
+    <h5 class="mb-3">Seguimiento de cancelaciones</h5>
+    <% if (pendientesCancelacion.length === 0 && posiblesSolapamientos.length === 0) { %>
+      <div class="alert alert-success mb-4">No hay cancelaciones pendientes ni solapamientos detectados.</div>
+    <% } %>
+
+    <% if (pendientesCancelacion.length > 0) { %>
+      <h6>Pendientes de confirmar</h6>
+      <div class="table-responsive mb-4">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr><th>Obra</th><th>Póliza a cancelar</th><th>Reemplazada por</th><th>Acción</th></tr>
+          </thead>
+          <tbody>
+            <% pendientesCancelacion.forEach(p => { %>
+              <tr>
+                <td><a href="/obras/<%= p.obraId %>/polizas"><%= p.obra ? p.obra.nombre : '-' %></a></td>
+                <td><%= p.tipo %> | <%= p.numero %></td>
+                <td><%= p.reemplazadaPor && p.reemplazadaPor.length ? p.reemplazadaPor.map(sucesora => `${sucesora.tipo} (${sucesora.numero})`).join(', ') : '-' %></td>
+                <td>
+                  <form method="POST" action="/polizas/<%= p.id %>/cancelar" onsubmit="return confirm('¿Confirmás que esta póliza ya fue cancelada?')">
+                    <button type="submit" class="btn btn-success btn-sm">Confirmar cancelación</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+
+    <% if (posiblesSolapamientos.length > 0) { %>
+      <h6>Revisar posibles solapamientos</h6>
+      <div class="table-responsive mb-4">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr><th>Obra</th><th>Póliza anterior vigente</th><th>Etapa posterior vigente</th><th></th></tr>
+          </thead>
+          <tbody>
+            <% posiblesSolapamientos.forEach(item => { %>
+              <tr>
+                <td><a href="/obras/<%= item.poliza.obraId %>/polizas"><%= item.poliza.obra ? item.poliza.obra.nombre : '-' %></a></td>
+                <td><%= item.poliza.tipo %> | <%= item.poliza.numero %></td>
+                <td><%= item.sucesora.tipo %> | <%= item.sucesora.numero %></td>
+                <td><a href="/obras/<%= item.poliza.obraId %>/polizas" class="btn btn-outline-secondary btn-sm">Revisar</a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+
     <h5 class="mb-3">Pólizas próximas a vencer (30 días)</h5>
     <% if (vencenPronto.length === 0) { %>
       <div class="alert alert-info mb-0">No hay pólizas próximas a vencer.</div>
